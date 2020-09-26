@@ -32,7 +32,8 @@ public class Referee extends AbstractReferee {
     public void gameTurn(int turn) {
         if (!board.canMove()) {
             gameManager.putMetadata("Points", String.valueOf(board.getScore()));
-            gameManager.winGame();
+            gameManager.winGame("score: " + board.getScore());
+            return;
         }
         Player player = gameManager.getPlayer();
         if (board.needsPlayerAction()) {
@@ -44,6 +45,7 @@ public class Referee extends AbstractReferee {
                 action = player.getOutputs().get(0);
             } catch (TimeoutException e) {
                 gameManager.loseGame("timeout");
+                return;
             }
             board.cache(action);
         }
