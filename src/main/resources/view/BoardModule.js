@@ -8,6 +8,10 @@ export class BoardModule {
         this.moveTurnCache = []
         this.SIZE = 4
         this.runtimeId = 1000000
+        this.score = 0
+        this.scoreText = EntityFactory.create("T")
+        this.scoreText.id = this.runtimeId++
+        entityModule.entities.set(this.scoreText.id, this.scoreText)
 
         this.grid = new Array(this.SIZE)
         for (var x = 0; x < this.SIZE; x++) {
@@ -54,6 +58,17 @@ export class BoardModule {
         if (value == 2) return 0x776e65
         if (value == 4) return 0x776e65
         return 0xf9f6f2
+    }
+
+    updateScore(frameInfo) {
+        this.scoreText.addState(0.6, {values: { ...this.scoreText.defaultState,
+                                      fontSize:100,
+                                      x:1400,
+                                      y:480,
+                                      visible:true,
+                                      text:"SCORE\n"+this.score,
+                                      t:0.6},
+                            curve:{}}, frameInfo.number, frameInfo)
     }
 
     placeEntity(text, rect, cell, time, value, visible, frameInfo) {
@@ -184,9 +199,10 @@ export class BoardModule {
         for (var i = 0; i < data.length; i++) {
             var c = data[i]
             var moveIndex = "^>v<".indexOf(c)
-            if (moveIndex >= 0) this.applyMove(frameInfo, moveIndex)
+            if (moveIndex >= 0) this.score += this.applyMove(frameInfo, moveIndex)
             else this.applySpawn(frameInfo, c)
         }
+        this.updateScore(frameInfo)
         this.moveCache.push(...this.moveTurnCache)
         this.moveTurnCache = []
         const registered = { ...this.previousFrame.registered, ...newRegistration }

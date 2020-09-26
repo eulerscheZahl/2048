@@ -115,9 +115,9 @@ public class Board {
         char c = moveCache.charAt(0);
         moveCache = moveCache.substring(1);
 
-        for (int i = 0; i < 4; i++) {
-            if (canMove(i)) c = dirs.charAt(i);
-        }
+        //for (int i = 0; i < 4; i++) {
+        //    if (canMove(i)) c = dirs.charAt(i);
+        //}
 
         if (!canMove(dirs.indexOf(c))) throw new Exception("Invalid action");
         score += applyMove(dirs.indexOf(c));
