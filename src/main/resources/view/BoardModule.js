@@ -1,8 +1,12 @@
-import { api as entityModule } from './entity-module/GraphicEntityModule.js'
-import { EntityFactory } from './entity-module/EntityFactory.js'
+import {
+    api as entityModule
+} from './entity-module/GraphicEntityModule.js'
+import {
+    EntityFactory
+} from './entity-module/EntityFactory.js'
 
 export class BoardModule {
-    constructor (assets) {
+    constructor(assets) {
         this.previousFrame = {}
         this.moveCache = []
         this.moveTurnCache = []
@@ -17,27 +21,32 @@ export class BoardModule {
         for (var x = 0; x < this.SIZE; x++) {
             this.grid[x] = new Array(this.SIZE)
             for (var y = 0; y < this.SIZE; y++) {
-                var text = EntityFactory.create("T")
-                text.id = this.runtimeId++
-                entityModule.entities.set(text.id, text)
                 var rect = EntityFactory.create("R")
                 rect.id = this.runtimeId++
                 entityModule.entities.set(rect.id, rect)
-                this.grid[x][y] = {"x":x, "y":y, "value":0, "text":text, "rect":rect}
+                var text = EntityFactory.create("T")
+                text.id = this.runtimeId++
+                entityModule.entities.set(text.id, text)
+                this.grid[x][y] = {
+                    "x": x,
+                    "y": y,
+                    "value": 0,
+                    "text": text,
+                    "rect": rect
+                }
             }
         }
 
         BoardModule.refreshContent = () => {}
     }
 
-    static refreshContent () {}
+    static refreshContent() {}
 
-    static get name () {
+    static get name() {
         return 'x'
     }
 
-    updateScene (previousData, currentData, progress) {
-    }
+    updateScene(previousData, currentData, progress) {}
 
     getBackgroundColor(value) {
         if (value == 2) return 0xeee4da
@@ -61,55 +70,78 @@ export class BoardModule {
     }
 
     updateScore(frameInfo) {
-        this.scoreText.addState(0.6, {values: { ...this.scoreText.defaultState,
-                                      fontSize:100,
-                                      x:1400,
-                                      y:480,
-                                      visible:true,
-                                      text:"SCORE\n"+this.score,
-                                      t:0.6},
-                            curve:{}}, frameInfo.number, frameInfo)
+        this.scoreText.addState(0.6, {
+            values: {
+                ...this.scoreText.defaultState,
+                fontSize: 100,
+                x: 1400,
+                y: 480,
+                visible: true,
+                text: "SCORE\n" + this.score,
+                t: 0.6
+            },
+            curve: {}
+        }, frameInfo.number, frameInfo)
     }
 
-    placeEntity(text, rect, cell, time, value, visible, frameInfo) {
-        text.addState(time, {values: { ...text.defaultState,
-                                      fillColor:this.getTextColor(value),
-                                      fontSize:100,
-                                      x:210*cell.x+530,
-                                      y:210*cell.y+170,
-                                      visible:visible,
-                                      textAlign:"center",
-                                      text:""+value,
-                                      zIndex:1,
-                                      t:time},
-                            curve:{}}, frameInfo.number, frameInfo)
+    placeEntity(text, rect, cell, time, value, visible, frameInfo, params = {}) {
+        var offsetX = 531
+        var offsetY = 218
+        var size = 186
+        var step = 212
+        text.addState(time, {
+            values: {
+                ...text.defaultState,
+                fillColor: this.getTextColor(value),
+                fontSize: 80,
+                x: step * cell.x + offsetX,
+                y: step * cell.y + offsetY,
+                visible: visible,
+                anchorX: 0.5,
+                anchorY: 0.5,
+                text: "" + value,
+                t: time,
+                ...params
+            },
+            curve: {}
+        }, frameInfo.number, frameInfo)
 
-        rect.addState(time, {values: { ...rect.defaultState,
-                                      fillColor:this.getBackgroundColor(value),
-                                      fontSize:100,
-                                      x:210*cell.x+440,
-                                      y:210*cell.y+130,
-                                      visible:visible,
-                                      width:190,
-                                      height:190,
-                                      t:time},
-                            curve:{}}, frameInfo.number, frameInfo)
+        rect.addState(time, {
+            values: {
+                ...rect.defaultState,
+                fillColor: this.getBackgroundColor(value),
+                fontSize: 100,
+                x: step * cell.x + offsetX - size / 2,
+                y: step * cell.y + offsetY - size / 2,
+                visible: visible,
+                width: size,
+                height: size,
+                t: time,
+                ...params
+            },
+            curve: {}
+        }, frameInfo.number, frameInfo)
     }
 
     animateMove(from, to, tEnd, value, frameInfo) {
         if (this.moveCache.length == 0) {
-            var text = EntityFactory.create("T")
-            text.id = this.runtimeId++
-            entityModule.entities.set(text.id, text)
             var rect = EntityFactory.create("R")
             rect.id = this.runtimeId++
             entityModule.entities.set(rect.id, rect)
-            var anim = {"text":text, "rect":rect}
+            var text = EntityFactory.create("T")
+            text.id = this.runtimeId++
+            entityModule.entities.set(text.id, text)
+            var anim = {
+                "text": text,
+                "rect": rect
+            }
         } else {
             var anim = this.moveCache.pop()
         }
 
-        this.placeEntity(anim.text, anim.rect, from, 0, value, true, frameInfo)
+        this.placeEntity(anim.text, anim.rect, from, 0, value, true, frameInfo, {
+            zIndex: 1
+        })
         this.placeEntity(anim.text, anim.rect, to, tEnd, value, false, frameInfo)
         this.moveTurnCache.push(anim)
     }
@@ -178,19 +210,30 @@ export class BoardModule {
 
     applySpawn(frameInfo, c) {
         var value = c.charCodeAt(0) >= 'a'.charCodeAt(0) ? 2 : 4
-        var index = value == 2 ? (c.charCodeAt(0)-'a'.charCodeAt(0)) : (c.charCodeAt(0)-'A'.charCodeAt(0))
+        var index = value == 2 ? (c.charCodeAt(0) - 'a'.charCodeAt(0)) : (c.charCodeAt(0) - 'A'.charCodeAt(0))
         var x = index % this.SIZE
         var y = Math.floor(index / this.SIZE)
         this.grid[x][y].value = value
+        this.placeEntity(this.grid[x][y].text, this.grid[x][y].rect, this.grid[x][y], 0.7, this.grid[x][y].value, true, frameInfo, {
+            alpha: 0
+        })
         this.placeEntity(this.grid[x][y].text, this.grid[x][y].rect, this.grid[x][y], 1, this.grid[x][y].value, true, frameInfo)
     }
 
-    handleFrameData (frameInfo, data) {
+    handleFrameData(frameInfo, data) {
         if (frameInfo.number == 0) {
             var background = EntityFactory.create("S")
             background.id = this.runtimeId++
             entityModule.entities.set(background.id, background)
-            background.addState(0, {values: { ...background.defaultState, image:"background.png", visible:true, zIndex:-1 }, curve:{}}, frameInfo.number, frameInfo)
+            background.addState(0, {
+                values: {
+                    ...background.defaultState,
+                    image: "background.png",
+                    visible: true,
+                    zIndex: -1
+                },
+                curve: {}
+            }, frameInfo.number, frameInfo)
         }
         if (!data) {
             return
@@ -205,13 +248,19 @@ export class BoardModule {
         this.updateScore(frameInfo)
         this.moveCache.push(...this.moveTurnCache)
         this.moveTurnCache = []
-        const registered = { ...this.previousFrame.registered, ...newRegistration }
-        const frame = { registered, number: frameInfo.number }
+        const registered = {
+            ...this.previousFrame.registered,
+            ...newRegistration
+        }
+        const frame = {
+            registered,
+            number: frameInfo.number
+        }
         this.previousFrame = frame
         return frame
     }
 
-    reinitScene (container, canvasData) {
+    reinitScene(container, canvasData) {
         BoardModule.refreshContent()
     }
 }
