@@ -16,9 +16,11 @@ public class Referee extends AbstractReferee {
     @Inject
     BoardModule boardModule;
     private Board board;
+    private int playerTurns = 0;
 
     @Override
     public void init() {
+        gameManager.setMaxTurns(100000);
         try {
         int seed = Integer.parseInt(gameManager.getTestCaseInput().get(0));
         board = new Board(seed, boardModule);}
@@ -37,6 +39,13 @@ public class Referee extends AbstractReferee {
         }
         Player player = gameManager.getPlayer();
         if (board.needsPlayerAction()) {
+            if (playerTurns == 600) {
+                gameManager.putMetadata("Points", String.valueOf(board.getScore()));
+                gameManager.addToGameSummary("Maximum number of player interactions (600) reached");
+                gameManager.winGame("score: " + board.getScore());
+                return;
+            }
+            playerTurns++;
             ArrayList<String> turnInput = board.getInput(turn == 1);
             for (String line : turnInput) player.sendInputLine(line);
             player.execute();
