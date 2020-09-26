@@ -1,9 +1,9 @@
 {
 	"title": {
-		"2": "Test case example",
-		"1": "Exemple de cas de test"
+		"2": "Random seed",
+		"1": "Random seed"
 	},
-	"testIn": "test content",
+	"testIn": "random",
 	"isTest": "true",
 	"isValidator": "false"
 }

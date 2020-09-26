@@ -1,37 +1,60 @@
 package com.codingame.game;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
-import com.codingame.gameengine.core.MultiplayerGameManager;
+import com.codingame.gameengine.core.SoloGameManager;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.google.inject.Inject;
+import engine.Board;
+import engine.BoardModule;
 
 public class Referee extends AbstractReferee {
-    // Uncomment the line below and comment the line under it to create a Solo Game
-    // @Inject private SoloGameManager<Player> gameManager;
-    @Inject private MultiplayerGameManager<Player> gameManager;
-    @Inject private GraphicEntityModule graphicEntityModule;
+    @Inject
+    private SoloGameManager<Player> gameManager;
+    @Inject
+    private GraphicEntityModule graphicEntityModule;
+    @Inject
+    BoardModule boardModule;
+    private Board board;
 
     @Override
     public void init() {
-        // Initialize your game here.
+        try {
+        int seed = Integer.parseInt(gameManager.getTestCaseInput().get(0));
+        board = new Board(seed, boardModule);}
+        catch (Exception ex) {
+            Random random = new Random();
+            board = new Board(random.nextInt(), boardModule);
+        }
     }
 
     @Override
     public void gameTurn(int turn) {
-        for (Player player : gameManager.getActivePlayers()) {
-            player.sendInputLine("input");
+        if (!board.canMove()) {
+            gameManager.putMetadata("Points", String.valueOf(board.getScore()));
+            gameManager.winGame();
+        }
+        Player player = gameManager.getPlayer();
+        if (board.needsPlayerAction()) {
+            ArrayList<String> turnInput = board.getInput(turn == 1);
+            for (String line : turnInput) player.sendInputLine(line);
             player.execute();
+            String action = null;
+            try {
+                action = player.getOutputs().get(0);
+            } catch (TimeoutException e) {
+                gameManager.loseGame("timeout");
+            }
+            board.cache(action);
         }
 
-        for (Player player : gameManager.getActivePlayers()) {
-            try {
-                List<String> outputs = player.getOutputs();
-                // Check validity of the player output and compute the new game state
-            } catch (TimeoutException e) {
-                player.deactivate(String.format("$%d timeout!", player.getIndex()));
-            }
-        }        
+        try {
+            board.playTurn();
+        } catch (Exception e) {
+            gameManager.loseGame("invalid action");
+        }
     }
 }

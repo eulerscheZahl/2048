@@ -2,15 +2,13 @@
 <div class="statement-body">
   <!-- GOAL -->
   <div class="statement-section statement-goal">
+    This is a port of the popular game 2048, play it online on <a href="https://play2048.co/">https://play2048.co/</a> <br><br><br>
     <h1>
       <span class="icon icon-goal">&nbsp;</span>
       <span>The Goal</span>
     </h1>
     <div class="statement-goal-content">
-      The aim of this game is to win.
-      <br>
-      <br>
-      For this question, you will be asked to output a single line as a solution.
+      Collect as many points as possible by joining two tiles with the same value.
     </div>
   </div>
   <!-- RULES -->
@@ -20,23 +18,9 @@
       <span>Rules</span>
     </h1>
     <div>
-      <div class="statement-rules-content">Your program receives characters.<br>
-        Your actions have an effect.<br>
-        <br>
-        The game zone works as follows:
-        <ul>
-          <li>There are coordinates.</li>
-        </ul>
-        <br>
-        The units work as follows:
-        <ul>
-          <li>They move around.</li>
-        </ul>
-        You <strong>lose</strong> if:
-        <ul>
-          <li>You mess up.</li>
-          <li>You do not supply a valid sequence of actions.</li>
-        </ul>
+      <div class="statement-rules-content">The game is played on a grid of size <const>4</const>x<const>4</const>. Some of the cells are occupied by numbers. You can move all the numbers on the grid in one of the four directions (up, down, left, right). Numbers will move as far as they can and only stop at an edge or another number. <br>
+      If two numbers with the same value collide and none of those has taken part in another merge during the turn, they will merge into a single number having twice the value. This will award you a score equal to the new value. <br>
+      After each move a new number will spawn at one of the free tiles at random. The new number can either be <const>2</const> or <const>4</const>.
       </div>
     </div>
   </div>
@@ -47,40 +31,12 @@
       <span>Expert Rules</span>
     </h1>
     <div class="statement-expert-rules-content">
-      If you're going to run local simulations, you'll need to know this!
+      For technical limitations you can only output 600 commands per game. To allow for longer games, you can print multiple actions at once.
+      The game uses a pseudo-random number generator to spawn new numbers, please refer to <a href="https://github.com/eulerscheZahl/2048/blob/master/src/main/java/engine/Board/Board.java#L25">github</a> for details.<br>
+    The initial seed is given to your program as an input.
     </div>
   </div>
-  <!-- EXAMPLES -->
-  <div class="statement-section statement-examples">
-    <h1>
-      <span class="icon icon-example">&nbsp;</span>
-      <span>Example</span>
-    </h1>
-
-    <div class="statement-examples-text">
-      A basic situation, an instruction, a result.
-    </div>
-
-  </div>
-  <!-- WARNING -->
-  <div class="statement-section statement-warning">
-    <h1>
-      <span class="icon icon-warning">&nbsp;</span>
-      <span>Note</span>
-    </h1>
-    <div class="statement-warning-content">
-      <b>Don’t forget to run the tests by launching them from the “Test cases” window</b>. You can submit at any time
-      to recieve a score against the training validators. <b>You can submit as many times as you like</b>. Your most
-      recent submission will be used for the final ranking.<br>
-      <br>
-      <strong>Warning:</strong> the validation tests used to compute the final score are not the same as the ones used
-      during the event.
-      Harcoded solutions will not score highly.<br>
-      <br>
-      Don't hesitate to change the viewer's options to help debug your code (<img style="opacity:.8;background:#20252a;"
-        height="18" src="https://www.codingame.com/servlet/fileservlet?id=3463235186409" width="18">).
-    </div>
-  </div>
+  
   <!-- PROTOCOL -->
   <div class="statement-section statement-protocol">
     <h1>
@@ -88,16 +44,19 @@
       <span>Game Input</span>
     </h1>
     <!-- Protocol block -->
-    <div class="blk">
-      <div class="text">The program must first read the initialization data from standard input. Then, provide to the
-        standard output one line with ...</div>
-    </div>
-
     <!-- Protocol block -->
     <div class="blk">
-      <div class="title">Input</div>
+      <div class="title">Initial input</div>
       <div class="text">
-        <p><span class="statement-lineno">Line 1: </span>one string <var>...</var>, the ...</p>
+        <p><span class="statement-lineno">Line 1: <var>seed</var>, the seed used to spawn new tiles.</p>
+      </div>
+    </div>
+
+    <div class="blk">
+      <div class="title">Input per turn</div>
+      <div class="text">
+        <p><span class="statement-lineno">Line 1: <var>score</var>, your total score so far.</p>
+        <p><span class="statement-lineno">Line 2-5: </span>four space separated integers <var>value</var> per line, giving the current grid with numbers.</p>
       </div>
     </div>
 
@@ -105,7 +64,7 @@
     <div class="blk">
       <div class="title">Output</div>
       <div class="text">
-        <span class="statement-lineno">A single line</span> containing ...
+        <span class="statement-lineno">A single line</span> containing <action>U</action>, <action>D</action>, <action>R</action> or <action>L</action>. You can print multiple actions at once, e.g. <action>UURDLUDL</action>
         <br>
       </div>
     </div>
@@ -113,20 +72,11 @@
     <!-- Protocol block -->
     <div class="blk">
       <div class="title">Constraints</div>
-      <div class="text"><var>...</var> contains between 1 and 500 characters.<br>
-        <br>Allotted response time to output
-        is ≤ <const>2</const> seconds.</div>
-    </div>
-  </div>
-  <!-- STORY -->
-  <div class="statement-story-background">
-    <div class="statement-story-cover" style="background-size: cover; background-image: url(https://www.codingame.com/servlet/fileservlet?id=2210505809934)">
-      <div class="statement-story">
-        <h1>Title</h1>
-        <div class="story-text">Story
-          <br>
-          Totally optional</div>
-      </div>
+      <div class="text">
+        <var>BOARD_SIZE</var> = <const>4</const>
+        <br>Allotted response time to output is &le; <const>1</const> second for the first turn.
+        <br>Allotted response time to output is &le; <const>50</const> ms for the later turns.
+        </div>
     </div>
   </div>
 </div>
