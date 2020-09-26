@@ -6,6 +6,8 @@ import com.codingame.gameengine.core.Module;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.util.HashMap;
+
 @Singleton
 public class BoardModule implements Module {
     private GameManager gameManager;
@@ -18,7 +20,11 @@ public class BoardModule implements Module {
 
     @Override
     public void onGameInit() {
-
+        // we are not using the GraphicsEntityModule directly but we have to set the world dimensions
+        HashMap<String, Integer> world = new HashMap<>();
+        world.put("width", 1920);
+        world.put("height", 1080);
+        gameManager.setViewGlobalData("entitymodule",  world);
     }
 
     private String message = "";

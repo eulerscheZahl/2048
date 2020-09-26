@@ -6,7 +6,6 @@ import java.util.Random;
 import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.SoloGameManager;
-import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.google.inject.Inject;
 import engine.Board;
 import engine.BoardModule;
@@ -14,8 +13,6 @@ import engine.BoardModule;
 public class Referee extends AbstractReferee {
     @Inject
     private SoloGameManager<Player> gameManager;
-    @Inject
-    private GraphicEntityModule graphicEntityModule;
     @Inject
     BoardModule boardModule;
     private Board board;
