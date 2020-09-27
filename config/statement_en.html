@@ -33,7 +33,7 @@
     <div class="statement-expert-rules-content">
       For technical limitations you can only output 600 commands per game. To allow for longer games, you can print multiple actions at once.
       The game uses a pseudo-random number generator to spawn new numbers, please refer to <a href="https://github.com/eulerscheZahl/2048/blob/master/src/main/java/engine/Board.java#L25">github</a> for details.<br>
-    The initial seed is given to your program as an input.
+      The current seed is given to your program as an input each turn.
     </div>
   </div>
   
@@ -44,19 +44,13 @@
       <span>Game Input</span>
     </h1>
     <!-- Protocol block -->
-    <!-- Protocol block -->
-    <div class="blk">
-      <div class="title">Initial input</div>
-      <div class="text">
-        <p><span class="statement-lineno">Line 1: <var>seed</var>, the seed used to spawn new tiles.</p>
-      </div>
-    </div>
 
     <div class="blk">
       <div class="title">Input per turn</div>
       <div class="text">
-        <p><span class="statement-lineno">Line 1: <var>score</var>, your total score so far.</p>
-        <p><span class="statement-lineno">Line 2-5: </span>four space separated integers <var>value</var> per line, giving the current grid with numbers.</p>
+        <p><span class="statement-lineno">Line 1: <var>seed</var>, the seed used to spawn new tiles.</p>
+        <p><span class="statement-lineno">Line 2: <var>score</var>, your total score so far.</p>
+        <p><span class="statement-lineno">Line 3-6: </span>four space separated integers <var>value</var> per line, giving the current grid with numbers.</p>
       </div>
     </div>
 
