@@ -22,11 +22,11 @@ public class Referee extends AbstractReferee {
     public void init() {
         gameManager.setMaxTurns(100000);
         try {
-        int seed = Integer.parseInt(gameManager.getTestCaseInput().get(0));
-        board = new Board(seed, boardModule);}
-        catch (Exception ex) {
+            int seed = Integer.parseInt(gameManager.getTestCaseInput().get(0));
+            board = new Board(seed, boardModule, gameManager);
+        } catch (Exception ex) {
             Random random = new Random();
-            board = new Board(random.nextInt(), boardModule);
+            board = new Board(random.nextInt(), boardModule, gameManager);
         }
     }
 
@@ -46,7 +46,7 @@ public class Referee extends AbstractReferee {
                 return;
             }
             playerTurns++;
-            ArrayList<String> turnInput = board.getInput(turn == 1);
+            ArrayList<String> turnInput = board.getInput();
             for (String line : turnInput) player.sendInputLine(line);
             player.execute();
             String action = null;
@@ -59,10 +59,6 @@ public class Referee extends AbstractReferee {
             board.cache(action);
         }
 
-        try {
-            board.playTurn();
-        } catch (Exception e) {
-            gameManager.loseGame("invalid action");
-        }
+        board.playTurn();
     }
 }

@@ -1,6 +1,9 @@
 package engine;
 
 
+import com.codingame.game.Player;
+import com.codingame.gameengine.core.SoloGameManager;
+
 import java.util.ArrayList;
 
 public class Board {
@@ -9,9 +12,11 @@ public class Board {
     private int[][] grid = new int[SIZE][SIZE];
     private int score;
     private BoardModule boardModule;
+    private SoloGameManager<Player> gameManager;
 
-    public Board(int seed, BoardModule boardModule) {
+    public Board(int seed, BoardModule boardModule, SoloGameManager<Player> gameManager) {
         this.boardModule = boardModule;
+        this.gameManager = gameManager;
         this.seed = seed;
         spawnTile();
         spawnTile();
@@ -111,7 +116,7 @@ public class Board {
         return moveCache.length() == 0;
     }
 
-    public void playTurn() throws Exception {
+    public void playTurn() {
         char c = moveCache.charAt(0);
         moveCache = moveCache.substring(1);
 
@@ -119,7 +124,11 @@ public class Board {
         //    if (canMove(i)) c = dirs.charAt(i);
         //}
 
-        if (!canMove(dirs.indexOf(c))) throw new Exception("Invalid action");
+        if (!canMove(dirs.indexOf(c))) {
+            gameManager.addTooltip(gameManager.getPlayer(), "invalid action");
+            moveCache = ""; // ignore remaining plans
+            return;
+        }
         score += applyMove(dirs.indexOf(c));
         boardModule.addMove(dirs.indexOf(c));
         spawnTile();
@@ -129,9 +138,9 @@ public class Board {
         moveCache = move.toUpperCase();
     }
 
-    public ArrayList<String> getInput(boolean firstTurn) {
+    public ArrayList<String> getInput() {
         ArrayList<String> result = new ArrayList<>();
-        if (firstTurn) result.add(String.valueOf(seed));
+        result.add(String.valueOf(seed));
         result.add(String.valueOf(score));
         for (int y = 0; y < SIZE; y++) {
             String line = "";

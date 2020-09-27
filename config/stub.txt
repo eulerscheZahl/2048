@@ -1,6 +1,5 @@
-read seed:int
-
 gameloop
+read seed:int
 read score:int
 loop 4 loopline 4 cell:int
 write U
