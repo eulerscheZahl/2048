@@ -5,7 +5,7 @@ public class SkeletonMain {
         SoloGameRunner gameRunner = new SoloGameRunner();
         gameRunner.setAgent(Agent1.class);
         gameRunner.setAgent("mono /home/eulerschezahl/Documents/Programming/C#/2048/bin/Debug/2048.exe");
-        gameRunner.setTestCase("test2.json");
+        gameRunner.setTestCase("test1.json");
         gameRunner.start();
     }
 }

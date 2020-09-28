@@ -109,33 +109,21 @@ public class Board {
         return turnScore;
     }
 
-    private String moveCache = "";
     private final String dirs = "URDL";
 
-    public boolean needsPlayerAction() {
-        return moveCache.length() == 0;
-    }
-
-    public void playTurn() {
-        char c = moveCache.charAt(0);
-        moveCache = moveCache.substring(1);
-
-        //for (int i = 0; i < 4; i++) {
-        //    if (canMove(i)) c = dirs.charAt(i);
-        //}
-
-        if (!canMove(dirs.indexOf(c))) {
-            gameManager.addTooltip(gameManager.getPlayer(), "invalid action");
-            moveCache = ""; // ignore remaining plans
-            return;
+    public void playTurn(String action) {
+        int subFrames = 0;
+        for (char c : action.toCharArray()) {
+            if (!canMove(dirs.indexOf(c))) {
+                gameManager.addTooltip(gameManager.getPlayer(), "invalid action");
+                return; // ignore remaining plans
+            }
+            subFrames++;
+            score += applyMove(dirs.indexOf(c));
+            boardModule.addMove(dirs.indexOf(c));
+            spawnTile();
         }
-        score += applyMove(dirs.indexOf(c));
-        boardModule.addMove(dirs.indexOf(c));
-        spawnTile();
-    }
-
-    public void cache(String move) {
-        moveCache = move.toUpperCase();
+        gameManager.setFrameDuration(500 * Math.max(1, subFrames));
     }
 
     public ArrayList<String> getInput() {

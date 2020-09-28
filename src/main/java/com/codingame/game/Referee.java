@@ -26,7 +26,9 @@ public class Referee extends AbstractReferee {
             board = new Board(seed, boardModule, gameManager);
         } catch (Exception ex) {
             Random random = new Random();
-            board = new Board(random.nextInt(), boardModule, gameManager);
+            int seed = -1;
+            while (seed < 0) seed = random.nextInt();
+            board = new Board(seed, boardModule, gameManager);
         }
     }
 
@@ -38,27 +40,24 @@ public class Referee extends AbstractReferee {
             return;
         }
         Player player = gameManager.getPlayer();
-        if (board.needsPlayerAction()) {
-            if (playerTurns == 600) {
-                gameManager.putMetadata("Points", String.valueOf(board.getScore()));
-                gameManager.addToGameSummary("Maximum number of player interactions (600) reached");
-                gameManager.winGame("score: " + board.getScore());
-                return;
-            }
-            playerTurns++;
-            ArrayList<String> turnInput = board.getInput();
-            for (String line : turnInput) player.sendInputLine(line);
-            player.execute();
-            String action = null;
-            try {
-                action = player.getOutputs().get(0);
-            } catch (TimeoutException e) {
-                gameManager.loseGame("timeout");
-                return;
-            }
-            board.cache(action);
+        if (playerTurns == 600) {
+            gameManager.putMetadata("Points", String.valueOf(board.getScore()));
+            gameManager.addToGameSummary("Maximum number of player interactions (600) reached");
+            gameManager.winGame("score: " + board.getScore());
+            return;
+        }
+        playerTurns++;
+        ArrayList<String> turnInput = board.getInput();
+        for (String line : turnInput) player.sendInputLine(line);
+        player.execute();
+        String action = null;
+        try {
+            action = player.getOutputs().get(0);
+        } catch (TimeoutException e) {
+            gameManager.loseGame("timeout");
+            return;
         }
 
-        board.playTurn();
+        board.playTurn(action);
     }
 }
