@@ -70,7 +70,7 @@ export class BoardModule {
     }
 
     translateTime(t) {
-        return (this.currentSubframe + t) / this.totalSubframes
+        return (Math.min(this.currentSubframe, this.totalSubframes-1) + t) / this.totalSubframes
     }
 
     updateScore(frameInfo) {
@@ -176,7 +176,6 @@ export class BoardModule {
                 var finalCell = this.grid[sourceX][sourceY]
                 var initialCell = finalCell
                 var value = finalCell.value
-                var finalValue = value
                 if (this.grid[sourceX][sourceY].value == 0) continue
                 for (var k = j - 1; k >= 0; k--) {
                     var intermediate = finalTarget + k * sourceStep
@@ -185,7 +184,6 @@ export class BoardModule {
                     var intermediateY = Math.floor(intermediate / this.SIZE)
                     if (this.grid[intermediateX][intermediateY].value == 0) {
                         finalCell = this.grid[intermediateX][intermediateY]
-                        finalValue = this.grid[intermediateX][intermediateY].value
                         finalCell.value = this.grid[sourceX][sourceY].value
                         this.grid[sourceX][sourceY].value = 0
                         source = intermediate
@@ -195,7 +193,6 @@ export class BoardModule {
                         if (!merged[intermediateX][intermediateY] && this.grid[intermediateX][intermediateY].value == this.grid[sourceX][sourceY].value) {
                             this.grid[sourceX][sourceY].value = 0
                             finalCell = this.grid[intermediateX][intermediateY]
-                            finalValue = finalCell.value
                             finalCell.value *= 2
                             merged[intermediateX][intermediateY] = true
                             turnScore += this.grid[intermediateX][intermediateY].value
@@ -207,7 +204,6 @@ export class BoardModule {
                 }
                 if (finalCell != initialCell) {
                     this.placeEntity(initialCell.text, initialCell.rect, initialCell, 0, value, initialCell.value > 0, frameInfo)
-                    //this.placeEntity(finalCell.text, finalCell.rect, finalCell, 0.01, finalValue, finalValue > 0, frameInfo)
                     this.updateValue(finalCell, tEnd, frameInfo)
                     this.animateMove(initialCell, finalCell, tEnd, value, frameInfo)
                 }

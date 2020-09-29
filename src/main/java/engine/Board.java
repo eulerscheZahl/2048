@@ -52,6 +52,8 @@ public class Board {
     }
 
     private boolean canMove(int dir) {
+        if (wrongCommands == 10) return false;
+
         int[][] backup = new int[SIZE][SIZE];
         for (int x = 0; x < SIZE; x++) {
             for (int y = 0; y < SIZE; y++) backup[x][y] = grid[x][y];
@@ -110,14 +112,24 @@ public class Board {
     }
 
     private final String dirs = "URDL";
+    private boolean tooltipShown = false;
+    private int wrongCommands = 0;
+    private char lastAction = ' ';
 
     public void playTurn(String action) {
         int subFrames = 0;
         for (char c : action.toCharArray()) {
             if (!canMove(dirs.indexOf(c))) {
-                gameManager.addTooltip(gameManager.getPlayer(), "invalid action");
+                if (!tooltipShown) {
+                    gameManager.addTooltip(gameManager.getPlayer(), "invalid action");
+                    tooltipShown = true;
+                }
+                if (c == lastAction) wrongCommands++;
+                lastAction = c;
+                gameManager.addToGameSummary("invalid action");
                 return; // ignore remaining plans
             }
+            wrongCommands = 0;
             subFrames++;
             score += applyMove(dirs.indexOf(c));
             boardModule.addMove(dirs.indexOf(c));
