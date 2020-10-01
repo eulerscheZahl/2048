@@ -118,8 +118,10 @@ public class Board {
 
     public void playTurn(String action) {
         int subFrames = 0;
-        for (char c : action.toCharArray()) {
-            if (!canMove(dirs.indexOf(c))) {
+        for (char c : action.toUpperCase().toCharArray()) {
+            int dir = dirs.indexOf(c);
+            if (dir == -1) continue;
+            if (!canMove(dir)) {
                 if (!tooltipShown) {
                     gameManager.addTooltip(gameManager.getPlayer(), "invalid action");
                     tooltipShown = true;
@@ -131,8 +133,8 @@ public class Board {
             }
             wrongCommands = 0;
             subFrames++;
-            score += applyMove(dirs.indexOf(c));
-            boardModule.addMove(dirs.indexOf(c));
+            score += applyMove(dir);
+            boardModule.addMove(dir);
             spawnTile();
         }
         gameManager.setFrameDuration(500 * Math.max(1, subFrames));
