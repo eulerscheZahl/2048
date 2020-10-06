@@ -1,6 +1,5 @@
 package engine;
 
-
 import com.codingame.game.Player;
 import com.codingame.gameengine.core.SoloGameManager;
 
@@ -23,10 +22,6 @@ public class Board {
         boardModule.onAfterGameTurn();
     }
 
-    public int getScore() {
-        return score;
-    }
-
     private void spawnTile() {
         ArrayList<Integer> freeCells = new ArrayList<>();
         for (int x = 0; x < SIZE; x++) {
@@ -42,6 +37,10 @@ public class Board {
         boardModule.addSpawn(spawnIndex, value);
 
         seed = seed * seed % 50515093L;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public boolean canMove() {
