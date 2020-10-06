@@ -36,7 +36,34 @@
       The current seed is given to your program as an input each turn.
     </div>
   </div>
-  
+
+ <!-- EXAMPLES -->
+  <div class="statement-section statement-examples">
+    <h1>
+      <span class="icon icon-example">&nbsp;</span>
+      <span>Example</span>
+    </h1>
+
+    <div class="statement-examples-text">
+      Given the following board:<br>
+      <table>
+        <tr><td>4&nbsp;</td><td>4&nbsp;</td><td>4&nbsp;</td><td>0</td></tr>
+        <tr><td>2&nbsp;</td><td>0&nbsp;</td><td>2&nbsp;</td><td>2</td></tr>
+        <tr><td>4&nbsp;</td><td>4&nbsp;</td><td>0&nbsp;</td><td>4</td></tr>
+        <tr><td>0&nbsp;</td><td>2&nbsp;</td><td>2&nbsp;</td><td>4</td></tr>
+      </table>
+Applying a left move to it, you'll get:<br>
+      <table>
+        <tr><td>8&nbsp;</td><td>4&nbsp;</td><td>0&nbsp;</td><td>0</td></tr>
+        <tr><td>4&nbsp;</td><td>2&nbsp;</td><td>0&nbsp;</td><td>0</td></tr>
+        <tr><td>8&nbsp;</td><td>4&nbsp;</td><td>0&nbsp;</td><td>0</td></tr>
+        <tr><td>4&nbsp;</td><td>4&nbsp;</td><td>0&nbsp;</td><td>0</td></tr>
+      </table>
+Note that the two <const>4</const>'s in the bottom line are not merged, as the left <const>4</const> was created in the same turn.
+    </div>
+
+  </div>
+
   <!-- PROTOCOL -->
   <div class="statement-section statement-protocol">
     <h1>

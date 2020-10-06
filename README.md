@@ -1,1 +1,1 @@
-Visit the game on [CodinGame](https://www.codingame.com/contribute/view/54927e7306266ad2583c95cbf8e3872d6def).
+Visit the game on [CodinGame](https://www.codingame.com/multiplayer/optimization/2048).

@@ -117,18 +117,22 @@ public class Board {
     private char lastAction = ' ';
 
     public void playTurn(String action) {
+        if (action.length() == 0) gameManager.loseGame("no action given");
         int subFrames = 0;
         for (char c : action.toUpperCase().toCharArray()) {
             int dir = dirs.indexOf(c);
-            if (dir == -1) continue;
+            if (dir == -1) {
+                gameManager.loseGame("unknown command: " + c);
+                continue;
+            }
             if (!canMove(dir)) {
                 if (!tooltipShown) {
-                    gameManager.addTooltip(gameManager.getPlayer(), "invalid action");
+                    gameManager.addTooltip(gameManager.getPlayer(), "invalid action: " + c);
                     tooltipShown = true;
                 }
                 if (c == lastAction) wrongCommands++;
                 lastAction = c;
-                gameManager.addToGameSummary("invalid action");
+                gameManager.addToGameSummary("invalid action: " + c);
                 return; // ignore remaining plans
             }
             wrongCommands = 0;

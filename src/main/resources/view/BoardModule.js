@@ -98,7 +98,7 @@ export class BoardModule {
             values: {
                 ...text.defaultState,
                 fillColor: this.getTextColor(value),
-                fontSize: 80,
+                fontSize: value < 1000 ? 80 : (value < 10000 ? 70 : 60),
                 x: step * cell.x + offsetX,
                 y: step * cell.y + offsetY,
                 visible: visible,
@@ -115,7 +115,6 @@ export class BoardModule {
             values: {
                 ...rect.defaultState,
                 fillColor: this.getBackgroundColor(value),
-                fontSize: 100,
                 x: step * cell.x + offsetX - size / 2,
                 y: step * cell.y + offsetY - size / 2,
                 visible: visible,
