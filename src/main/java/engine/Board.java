@@ -34,7 +34,7 @@ public class Board {
         int value = (seed & 0x10) == 0 ? 2 : 4;
 
         grid[spawnIndex % SIZE][spawnIndex / SIZE] = value;
-        boardModule.addSpawn(spawnIndex, value);
+        if (!noView) boardModule.addSpawn(spawnIndex, value);
 
         seed = seed * seed % 50515093L;
     }
@@ -114,11 +114,14 @@ public class Board {
     private boolean tooltipShown = false;
     private int wrongCommands = 0;
     private char lastAction = ' ';
+    private boolean noView = false;
 
     public void playTurn(String action) {
+        noView |= action.contains("-");
         if (action.length() == 0) gameManager.loseGame("no action given");
         int subFrames = 0;
         for (char c : action.toUpperCase().toCharArray()) {
+            if (c == '-') continue;
             int dir = dirs.indexOf(c);
             if (dir == -1) {
                 gameManager.loseGame("unknown command: " + c);
@@ -137,7 +140,7 @@ public class Board {
             wrongCommands = 0;
             subFrames++;
             score += applyMove(dir);
-            boardModule.addMove(dir);
+            if (!noView) boardModule.addMove(dir);
             spawnTile();
         }
         gameManager.setFrameDuration(500 * Math.max(1, subFrames));
