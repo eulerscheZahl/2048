@@ -59,5 +59,7 @@ public class Referee extends AbstractReferee {
         }
 
         board.playTurn(action);
+        gameManager.addToGameSummary("Score: " + board.getScore());
+        gameManager.addToGameSummary("Moves: " + board.getMoves());
     }
 }

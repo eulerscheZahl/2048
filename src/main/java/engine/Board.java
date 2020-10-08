@@ -2,7 +2,6 @@ package engine;
 
 import com.codingame.game.Player;
 import com.codingame.gameengine.core.SoloGameManager;
-
 import java.util.ArrayList;
 
 public class Board {
@@ -10,6 +9,7 @@ public class Board {
     private long seed;
     private int[][] grid = new int[SIZE][SIZE];
     private int score;
+    private int moves;
     private BoardModule boardModule;
     private SoloGameManager<Player> gameManager;
 
@@ -41,6 +41,10 @@ public class Board {
 
     public int getScore() {
         return score;
+    }
+
+    public int getMoves() {
+        return moves;
     }
 
     public boolean canMove() {
@@ -140,6 +144,7 @@ public class Board {
             wrongCommands = 0;
             subFrames++;
             score += applyMove(dir);
+            moves++;
             if (!noView) boardModule.addMove(dir);
             spawnTile();
         }
