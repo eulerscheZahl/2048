@@ -74,6 +74,7 @@ export class BoardModule {
     }
 
     updateScore(frameInfo) {
+        if (frameInfo.number == 0) return
         this.scoreText.addState(this.translateTime(0.6), {
             values: {
                 ...this.scoreText.defaultState,
@@ -223,6 +224,7 @@ export class BoardModule {
         })
         this.placeEntity(this.grid[x][y].text, this.grid[x][y].rect, this.grid[x][y], 0.98, this.grid[x][y].value, true, frameInfo)
 
+        if (frameInfo.number == 0) return
         for (var x = 0; x < this.SIZE; x++) {
             for (var y = 0; y < this.SIZE; y++) {
                 this.updateValue(this.grid[x][y], 0.99, frameInfo)
