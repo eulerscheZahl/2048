@@ -4,6 +4,9 @@ import {
 import {
     EntityFactory
 } from './entity-module/EntityFactory.js'
+import {
+    Entity
+} from './entity-module/Entity.js'
 
 export class BoardModule {
     constructor(assets) {
@@ -95,37 +98,62 @@ export class BoardModule {
         var size = 186
         var step = 212
         time = this.translateTime(time)
-        text.addState(time, {
-            values: {
-                ...text.defaultState,
-                fillColor: this.getTextColor(value),
-                fontSize: value < 1000 ? 80 : (value < 10000 ? 70 : 60),
-                x: step * cell.x + offsetX,
-                y: step * cell.y + offsetY,
-                visible: visible,
-                anchorX: 0.5,
-                anchorY: 0.5,
-                text: "" + value,
-                t: time,
-                ...params
-            },
-            curve: {}
-        }, frameInfo.number, frameInfo)
 
-        rect.addState(time, {
-            values: {
-                ...rect.defaultState,
-                fillColor: this.getBackgroundColor(value),
-                x: step * cell.x + offsetX - size / 2,
-                y: step * cell.y + offsetY - size / 2,
-                visible: visible,
-                width: size,
-                height: size,
-                t: time,
-                ...params
-            },
-            curve: {}
-        }, frameInfo.number, frameInfo)
+        var textvalues = {
+            alpha: params.alpha || 1,
+            anchorX: 0.5,
+            anchorY: 0.5,
+            blendMode: 0,
+            fillColor: this.getTextColor(value),
+            fontFamily: "Lato",
+            fontSize: value < 1000 ? 80 : (value < 10000 ? 70 : 60),
+            fontWeight: "normal",
+            mask: -1,
+            maxWidth: 0,
+            rotation: 0,
+            scaleX: 1,
+            scaleY: 1,
+            skewX: 0,
+            skewY: 0,
+            strokeColor: 0,
+            strokeThickness: 0,
+            text: "" + value,
+            textAlign: "left",
+            tint: 16777215,
+            visible: visible,
+            x: step * cell.x + offsetX,
+            y: step * cell.y + offsetY,
+            zIndex: params.zIndex || 0,
+            t: time,
+        }
+        var rectvalues = {
+            alpha: 1,
+            blendMode: 0,
+            fillAlpha: 1,
+            fillColor: this.getBackgroundColor(value),
+            height: size,
+            lineAlpha: 1,
+            lineColor: 0,
+            lineWidth: 0,
+            mask: -1,
+            rotation: 0,
+            scaleX: 1,
+            scaleY: 1,
+            skewX: 0,
+            skewY: 0,
+            visible: visible,
+            width: size,
+            x: step * cell.x + offsetX - size / 2,
+            y: step * cell.y + offsetY - size / 2,
+            zIndex: params.zIndex || 0,
+            t: time,
+        }
+
+        // do this without the SDK to avoid the collision check (time consuming)
+        if (!text.states[frameInfo.number]) text.states[frameInfo.number] = []
+        if (!rect.states[frameInfo.number]) rect.states[frameInfo.number] = []
+        text.states[frameInfo.number].push(Entity.createState(time, textvalues, {}))
+        rect.states[frameInfo.number].push(Entity.createState(time, rectvalues, {}))
     }
 
     animateMove(from, to, tEnd, value, frameInfo) {
